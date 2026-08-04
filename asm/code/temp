@@ -1,0 +1,12 @@
+call main
+halt
+
+main:
+    load_str r0, "Hi Guys, %d!\n"
+
+    mov r1, 5
+    store sp, -8, r1
+
+    native printf
+    mov r0, 0
+    halt

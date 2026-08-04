@@ -1,0 +1,109 @@
+Architecture
+
+Instructions:
+
+D = destination
+L = left operand
+R = right operand
+
+REG = register
+    Registers can have specific sizes provided to them, like r0:1, which is the lower byte of register r0
+IMM = immediate value
+NAME = identifier (only used in one instruction: native)
+
+
+256 registers
+ * r0-r10 = Arguments (r0 is also return value)
+ * r11-r131 = Caller-saved registers (temporary registers)
+ * r132-r252 = Callee-saved registers
+ * r253 = lr (return address for functions)
+ * r254 = sp (pointer to top of stack)
+ * r255 = pc (current instruction number)
+
+    mov_imm [D, REG], [L, IMM]
+        moves an immediate (L) into register (D)
+
+    mov_reg [D, REG], [L, REG]
+        Moves the contents of one register (L) into another (D)
+
+    add [D, REG], [L, REG/IMM], [R, REG/IMM]
+        Sets register (D) into the sum of two values (L and R)
+
+    sub [D, REG], [L, REG/IMM], [R, REG/IMM]
+        Sets register (D) into the difference between two values (L and R)
+
+    mul [D, REG], [L, REG/IMM], [R, REG/IMM]
+        Sets register (D) into the product of two values (L and R)
+
+    div [D, REG], [L, REG/IMM], [R, REG/IMM]
+        Sets register (D) into the quotient between two values (L and R)
+
+    sete [D, REG], [L, REG/IMM], [R, REG/IMM]
+        Sets register (D) to 1 if the registers (L and R) are equal, and 0 otherwise
+
+    setl [D, REG], [L, REG/IMM], [R, REG/IMM]
+        Sets register (D) to 1 if the register L is less than the register R, and 0 otherwise
+
+    setle [D, REG], [L, REG/IMM], [R, REG/IMM]
+        Sets register (D) to 1 if the register L is less than or equal to the register R, and 0 otherwise
+
+    setg [D, REG], [L, REG/IMM], [R, REG/IMM]
+        Sets register (D) to 1 if the register L is greater than the register R, and 0 otherwise
+
+    setge [D, REG], [L, REG/IMM], [R, REG/IMM]
+        Sets register (D) to 1 if the register L is greater than or equal to the register R, and 0 otherwise
+
+    jmp [D, IMM]
+        Jumps to the instruction number of D
+
+    jmpif [D, REG/IMM], [L, IMM]
+        Jumps to instruction # of L only if the value stored in D is a positive non-zero integer, but doesn't if it's a negative value or zero.
+
+    jmpifn [D, REG/IMM], [L, IMM]
+        Jumps to instruction # of L only if the value stored in D is negative or zero
+
+    call [D, IMM]
+        Jumps to the instruction number of D and writes the current instruction number into register `lr`
+
+    syscall
+        * Currently deprecated *
+    
+    halt
+        Instantly halts the execution of the machine
+
+    ret
+        Reads the value of `lr` and jumps to the instruction after it
+
+    store8 [D, REG], [L, IMM], [R, REG]
+        Sets the first 8 bits, or 1 byte, of pointer `D + L` to the value in R
+
+    store16 [D, REG], [L, IMM], [R, REG]
+        Sets the first 16 bits, or 2 bytes, of pointer `D + L` to the value in R
+
+    store32 [D, REG], [L, IMM], [R, REG]
+        Sets the first 32 bits, or 4 bytes, of pointer `D + L` to the value in R
+
+    store64 [D, REG], [L, IMM], [R, REG]
+        Sets the first 64 bits, or 8 bytes, of pointer `D + L` to the value in R
+
+    load8 [D, REG], [L, REG], [R, REG/IMM]
+        Sets the value of register D into the first 8 bits, or 1 byte, of data in pointer `L + R`
+
+    load16 [D, REG], [L, REG], [R, REG/IMM]
+        Sets the value of register D into the first 16 bits, or 2 byte, of data in pointer `L + R`
+
+    load32 [D, REG], [L, REG], [R, REG/IMM]
+        Sets the value of register D into the first 32 bits, or 4 byte, of data in pointer `L + R`
+
+    load64 [D, REG], [L, REG], [R, REG/IMM]
+        Sets the value of register D into the first 64 bits, or 8 byte, of data in pointer `L + R`
+
+    load_str [D, REG], [L, IMM]
+        Uses L as an index to a constant pool of data and sets D to its pointer
+
+    native [D, NAME]
+        Searches for the name D in a list of natives
+
+Dependencies other than instruction list:
+    Constant Pool: Expected to be filled with data if load_str is used
+    Native Lists: List of natives, a new native can easily be added
